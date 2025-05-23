@@ -6,7 +6,7 @@ API_BASE = "https://api.lexoffice.io/v1/invoices/"
 API_TOKEN = os.getenv("LEXWARE_API_TOKEN")
 
 START_NUMMER = 1
-END_NUMMER = 6  # entspricht RE0001 bis RE0005
+END_NUMMER = 2  # entspricht RE0001 bis RE0005
 
 # === Header vorbereiten ===
 HEADERS = {
