@@ -1,0 +1,38 @@
+import os
+import requests
+
+# === Konfiguration ===
+API_BASE = "https://api.lexoffice.io/v1/invoices/"
+API_TOKEN = os.getenv("LEXWARE_API_TOKEN")
+
+START_NUMMER = 1
+END_NUMMER = 6  # entspricht RE0001 bis RE0005
+
+# === Header vorbereiten ===
+HEADERS = {
+    "Authorization": f"Bearer {API_TOKEN}",
+    "Accept": "application/json"
+}
+
+# === Rechnung abfragen ===
+def hole_rechnung(rechnungsnummer):
+    url = f"{API_BASE}{rechnungsnummer}"
+    response = requests.get(url, headers=HEADERS)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"❌ {rechnungsnummer} nicht gefunden (Status {response.status_code})")
+        return None
+
+# === Rechnungen durchgehen ===
+for nr in range(START_NUMMER, END_NUMMER):
+    rechnungsnummer = f"RE{str(nr).zfill(4)}"  # z. B. RE0001
+    daten = hole_rechnung(rechnungsnummer)
+    if daten:
+        print("✅ Rechnung gefunden:")
+        print(f"  Nummer:        {daten.get('invoiceNumber')}")
+        print(f"  Status:        {daten.get('state')}")
+        print(f"  Kunde:         {daten.get('contact', {}).get('name', 'Unbekannt')}")
+        print(f"  Betrag (brutto): {daten.get('totalAmount')}")
+        print(f"  Datum:         {daten.get('invoiceDate')}")
+        print("-" * 40)
